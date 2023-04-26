@@ -1,4 +1,4 @@
-const router = require('express').Router();
+const router = require('express').Router(); // eslint-disable-line new-cap
 const {jobQueue} = require('../config/queues');
 
 router.route('/job')
@@ -12,13 +12,13 @@ router.route('/job')
     })
     .post(async (req, res) => {
         try {
-            await jobQueue.add('testJob', { foo: 'bar' });
+            await jobQueue.add('testJob', {foo: 'bar'});
 
             console.log('hi from post route');
             return res.status(200).send({});
         } catch (err) {
             return res.status(500).send('Internal Service Error');
         }
-    })
+    });
 
 module.exports = router;
