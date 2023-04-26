@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const {jobQueue} = require('../config/queues');
 
 router.route('/job')
     .get(async (req, res) => {
@@ -11,6 +12,8 @@ router.route('/job')
     })
     .post(async (req, res) => {
         try {
+            await jobQueue.add('testJob', { foo: 'bar' });
+
             console.log('hi from post route');
             return res.status(200).send({});
         } catch (err) {
