@@ -12,11 +12,17 @@ router.route('/job')
     })
     .post(async (req, res) => {
         try {
-            await jobQueue.add('testJob', {foo: 'bar'});
+            const targetUrl = req.body.targetUrl;
+            if (!targetUrl) {
+                throw new Error('Missing required request parameters');
+            }
+            const jobName = req.body.jobName || 'testJob';
 
-            console.log('hi from post route');
-            return res.status(200).send({});
+            await jobQueue.add(jobName, {targetUrl: targetUrl});
+
+            return res.status(200).send(`Job ${jobName} queued`);
         } catch (err) {
+            console.log(`Error adding job to queue: ${err.message}`);
             return res.status(500).send('Internal Service Error');
         }
     });
