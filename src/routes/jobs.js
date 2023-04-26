@@ -4,6 +4,7 @@ const mongo = require('../services/mongoWrapper');
 const {ObjectId} = require('mongodb');
 
 // To Do - with more time move the logic out of the routes file
+// Consolidate error handling
 
 router.route('/job/:id')
     .get(async (req, res) => {
@@ -19,6 +20,19 @@ router.route('/job/:id')
             return res.status(200).send(result);
         } catch (err) {
             console.log(`Error getting job: ${err.message}`);
+            return res.status(500).send('Internal Service Error');
+        }
+    })
+    .delete(async (req, res) => {
+        try {
+            const jobId = req.params.id;
+
+            const db = await mongo.getClient();
+            const result = await db.collection('results').deleteOne({'_id': new ObjectId(jobId)});  // eslint-disable-line
+
+            return res.status(200).send('ok');
+        } catch {
+            console.log(`Error deleting job: ${err.message}`);
             return res.status(500).send('Internal Service Error');
         }
     });

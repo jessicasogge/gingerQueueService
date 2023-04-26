@@ -28,3 +28,6 @@ Health Check: GET http://localhost:3002/health-check
 
 Add a job to Queue: POST http://localhost:3002/job Body: {"targetUrl": "https://example.com/"}, optionally include a jobName
 
+Get status of an existing job or results: GET: http://localhost:3002/job/:id
+
+Delete a job: DELETE http://localhost:3002/job/:id
