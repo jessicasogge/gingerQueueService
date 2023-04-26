@@ -14,6 +14,8 @@ If a URL has been submitted within the last hour, do not fetch the data again.
 
 The API should also support batch requests for new jobs (i.e. you should be able to add jobs for several URLs at once).
 
+Assumption - deleting/checking status in database is sufficient - would need additional implementation to remove from queue
+
 To Run:
 
 Must have redis installed locally and running locally
@@ -26,7 +28,7 @@ Endpoints:
 
 Health Check: GET http://localhost:3002/health-check
 
-Add a job to Queue: POST http://localhost:3002/job Body: {"targetUrl": "https://example.com/"}, optionally include a jobName
+Add a job to Queue: POST http://localhost:3002/jobs Body: {"targetUrls": ["https://example.com/"]...}
 
 Get status of an existing job or results: GET: http://localhost:3002/job/:id
 

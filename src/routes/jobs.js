@@ -34,28 +34,31 @@ router.route('/job/:id')
         }
     });
 
-router.route('/job')
+router.route('/jobs')
     .post(async (req, res) => {
         try {
-            const targetUrl = req.body.targetUrl;
-            if (!targetUrl) {
+            const targetUrls = req.body.targetUrls;
+            if (!targetUrls) {
                 throw new Error('Missing required request parameters');
             }
-            const jobName = req.body.jobName || 'testJob';
 
-            const data = {
-                targetUrl: targetUrl,
-                jobName: jobName,
-                status: 'queued',
-                results: {},
-            };
+            const jobData = targetUrls.map((element) => {
+                return {
+                    name: 'My Job',
+                    data: {
+                        targetUrl: element,
+                        status: 'queued',
+                        results: {},
+                    },
+                };
+            });
 
             const db = await mongo.getClient();
-            const result = await db.collection('results').insertOne(data);
+            const result = await db.collection('results').insertMany(jobData);
 
-            await jobQueue.add(jobName, data);
+            await jobQueue.addBulk(jobData);
 
-            return res.status(200).send({id: result.insertedId});
+            return res.status(200).send({id: result});
         } catch (err) {
             console.log(`Error adding job to queue: ${err.message}`);
             return res.status(500).send('Internal Service Error');
