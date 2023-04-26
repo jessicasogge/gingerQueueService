@@ -1,15 +1,29 @@
 const router = require('express').Router(); // eslint-disable-line new-cap
 const {jobQueue} = require('../config/queues');
+const mongo = require('../services/mongoWrapper');
+const {ObjectId} = require('mongodb');
 
-router.route('/job')
+// To Do - with more time move the logic out of the routes file
+
+router.route('/job/:id')
     .get(async (req, res) => {
         try {
-            console.log('hi from get route');
-            return res.status(200).send({});
+            const jobId = req.params.id;
+            const query = {
+                '_id': new ObjectId(jobId),
+            };
+
+            const db = await mongo.getClient();
+            const result = await db.collection('results').find(query).toArray();
+
+            return res.status(200).send(result);
         } catch (err) {
+            console.log(`Error getting job: ${err.message}`);
             return res.status(500).send('Internal Service Error');
         }
-    })
+    });
+
+router.route('/job')
     .post(async (req, res) => {
         try {
             const targetUrl = req.body.targetUrl;
@@ -18,9 +32,19 @@ router.route('/job')
             }
             const jobName = req.body.jobName || 'testJob';
 
-            await jobQueue.add(jobName, {targetUrl: targetUrl});
+            const data = {
+                targetUrl: targetUrl,
+                jobName: jobName,
+                status: 'queued',
+                results: {},
+            };
 
-            return res.status(200).send(`Job ${jobName} queued`);
+            const db = await mongo.getClient();
+            const result = await db.collection('results').insertOne(data);
+
+            await jobQueue.add(jobName, data);
+
+            return res.status(200).send({id: result.insertedId});
         } catch (err) {
             console.log(`Error adding job to queue: ${err.message}`);
             return res.status(500).send('Internal Service Error');

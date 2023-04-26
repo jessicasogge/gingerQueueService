@@ -26,4 +26,5 @@ Endpoints:
 
 Health Check: GET http://localhost:3002/health-check
 
-Add a job to Queue: POST http://localhost:3002/job
+Add a job to Queue: POST http://localhost:3002/job Body: {"targetUrl": "https://example.com/"}, optionally include a jobName
+
