@@ -1,10 +1,23 @@
 const {Worker} = require('bullmq');
 const {jobQueue, connection} = require('../config/queues');
+const mongo = require('../services/mongoWrapper');
+const axios = require('axios');
+const {ObjectId} = require('mongodb');
 
 const worker = new Worker(jobQueue.name, async (job) => { // eslint-disable-line
-    console.log('Processing job: ', job.data);
+    try {
+        console.log('Processing job: ', job.data);
 
-    // Make http request
+        const setProcessing = {'$set': {'status': 'processing'}};
+        const db = await mongo.getClient();
+        await db.collection('results').updateOne({'_id': new ObjectId(job.data._id)}, setProcessing);  // eslint-disable-line
 
-    // Store result
+        const data = await axios.get(job.data.targetUrl);
+
+        const setComplete = {'$set': {'status': 'complete', 'results': data}};
+        await db.collection('results').updateOne({'_id': new ObjectId(job.data._id)}, setComplete);  // eslint-disable-line
+    } catch (err) {
+        // add error handling and retry as needed
+        console.log(err);
+    }
 }, connection);

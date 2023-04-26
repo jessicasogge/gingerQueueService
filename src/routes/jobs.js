@@ -10,12 +10,9 @@ router.route('/job/:id')
     .get(async (req, res) => {
         try {
             const jobId = req.params.id;
-            const query = {
-                '_id': new ObjectId(jobId),
-            };
 
             const db = await mongo.getClient();
-            const result = await db.collection('results').find(query).toArray();
+            const result = await db.collection('results').find({'_id': new ObjectId(jobId)}).toArray(); // eslint-disable-line
 
             return res.status(200).send(result);
         } catch (err) {

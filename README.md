@@ -31,3 +31,4 @@ Add a job to Queue: POST http://localhost:3002/job Body: {"targetUrl": "https://
 Get status of an existing job or results: GET: http://localhost:3002/job/:id
 
 Delete a job: DELETE http://localhost:3002/job/:id
+
