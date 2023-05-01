@@ -6,8 +6,7 @@ module.exports = {
         try {
             if (!connection) {
                 console.log('Creating a new Mongo Client');
-                // In real life this would be in env vars
-                const client = new MongoClient('mongodb+srv://jobManager:9uIoEk6uwBSiBsWb@cluster0.zbngmvm.mongodb.net/ginger?retryWrites=true&w=majority');
+                const client = new MongoClient(process.env.MONGO);
                 await client.connect();
                 connection = client.db();
             }

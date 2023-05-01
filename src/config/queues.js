@@ -1,10 +1,9 @@
 const {Queue} = require('bullmq');
 
-// In real life I would put the connection info in env vars
 const connection = {
     'connection': {
-        'host': '127.0.0.1',
-        'port': 6379,
+        'host': process.env.REDIS_HOST,
+        'port': process.env.REDIS_PORT,
     },
 };
 
