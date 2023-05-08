@@ -1,5 +1,6 @@
 const {Worker} = require('bullmq');
 const {jobQueue, connection} = require('../config/queues');
+require('dotenv').config();
 const mongo = require('../services/mongoWrapper');
 const axios = require('axios');
 const {ObjectId} = require('mongodb');
@@ -13,10 +14,10 @@ const worker = new Worker(jobQueue.name, async (job) => { // eslint-disable-line
         // To Do check on this query and see if it works
         const recentlyQueried = await db.collection('results').find({
             'time': {
-                $gte: new Date().getTime() - (1000 * 60 * 60), // eslint-disable-line
+                $gte: new Date(new Date().setDate(new Date().getDate()-1)), // eslint-disable-line
             },
             'data.targetUrl': job.data.targetUrl,
-        });
+        }).toArray();
 
         if (recentlyQueried[0]) {
             console.log('returning without processing');

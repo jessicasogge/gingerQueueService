@@ -45,6 +45,7 @@ router.route('/jobs')
             const jobData = targetUrls.map((element) => {
                 return {
                     name: 'My Job',
+                    time: new Date(),
                     data: {
                         targetUrl: element,
                         status: 'queued',
