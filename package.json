@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "start": "node app.js",
-    "startConsumer": "node ./src/consumers/jobConsumer.js",
+    "start": "nodemon app.js",
+    "startConsumer": "nodemon ./src/consumers/jobConsumer.js",
     "lint": "eslint ."
   },
   "dependencies": {
@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "eslint": "^8.39.0",
-    "eslint-config-google": "^0.14.0"
+    "eslint-config-google": "^0.14.0",
+    "nodemon": "^2.0.22"
   }
 }
