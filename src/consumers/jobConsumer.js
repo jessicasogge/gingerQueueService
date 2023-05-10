@@ -11,7 +11,6 @@ const worker = new Worker(jobQueue.name, async (job) => { // eslint-disable-line
 
         const db = await mongo.getClient();
 
-        // To Do check on this query and see if it works
         const recentlyQueried = await db.collection('results').find({
             'time': {
                 $gte: new Date(new Date().setDate(new Date().getDate()-1)), // eslint-disable-line
