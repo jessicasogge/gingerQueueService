@@ -1,6 +1,7 @@
 const router = require('express').Router(); // eslint-disable-line new-cap
 const {jobQueue} = require('../config/queues');
 const mongo = require('../services/mongoWrapper');
+const {getJob} = require('../services/jobService');
 const {ObjectId} = require('mongodb');
 
 // To Do - with more time move the logic out of the routes file
@@ -11,8 +12,7 @@ router.route('/job/:id')
         try {
             const jobId = req.params.id;
 
-            const db = await mongo.getClient();
-            const result = await db.collection('results').find({'_id': new ObjectId(jobId)}).toArray(); // eslint-disable-line
+            const result = await getJob(jobId);
 
             return res.status(200).send(result);
         } catch (err) {
