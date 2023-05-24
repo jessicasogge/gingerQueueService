@@ -1,7 +1,7 @@
 const router = require('express').Router(); // eslint-disable-line new-cap
 const {jobQueue} = require('../config/queues');
 const mongo = require('../services/mongoWrapper');
-const {getJob} = require('../services/jobService');
+const {getJob, deleteJob} = require('../services/jobService');
 const {ObjectId} = require('mongodb');
 
 // To Do - with more time move the logic out of the routes file
@@ -24,8 +24,7 @@ router.route('/job/:id')
         try {
             const jobId = req.params.id;
 
-            const db = await mongo.getClient();
-            const result = await db.collection('results').deleteOne({'_id': new ObjectId(jobId)});  // eslint-disable-line
+            const result = await deleteJob(jobId);
 
             return res.status(200).send('ok');
         } catch {

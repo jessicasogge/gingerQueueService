@@ -6,4 +6,9 @@ module.exports = {
         const db = await mongo.getClient();
         return await db.collection('results').find({'_id': new ObjectId(jobId)}).toArray(); // eslint-disable-line
     },
+
+    deleteJob: async function(jobId) {
+        const db = await mongo.getClient();
+        return await db.collection('results').deleteOne({'_id': new ObjectId(jobId)}); // eslint-disable-line
+    }
 };
