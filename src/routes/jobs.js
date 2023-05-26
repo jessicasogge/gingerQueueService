@@ -1,6 +1,7 @@
 const router = require('express').Router(); // eslint-disable-line new-cap
 const {jobQueue} = require('../config/queues');
 const {getJob, deleteJob, addJobs} = require('../services/jobService');
+const {ObjectId} = require('mongodb');
 
 // To Do - with more time move the logic out of the routes file
 // Consolidate error handling
@@ -40,18 +41,21 @@ router.route('/jobs')
             }
 
             const jobData = targetUrls.map((element) => {
+                const _id = new ObjectId();
                 return {
+                    _id: _id,
                     name: 'My Job',
                     time: new Date(),
                     data: {
                         targetUrl: element,
                         status: 'queued',
                         results: {},
+                        _id: _id,
                     },
                 };
             });
 
-            const result = addJobs(jobData);
+            const result = await addJobs(jobData);
 
             await jobQueue.addBulk(jobData);
 

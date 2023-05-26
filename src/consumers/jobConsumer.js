@@ -16,6 +16,7 @@ const worker = new Worker(jobQueue.name, async (job) => { // eslint-disable-line
                 $gte: new Date(new Date().setDate(new Date().getDate()-1)), // eslint-disable-line
             },
             'data.targetUrl': job.data.targetUrl,
+            '_id': {'$ne': new ObjectId(job.data._id)},
         }).toArray();
 
         if (recentlyQueried[0]) {
@@ -23,12 +24,12 @@ const worker = new Worker(jobQueue.name, async (job) => { // eslint-disable-line
             return;
         }
 
-        const setProcessing = {'$set': {'status': 'processing'}};
+        const setProcessing = {'$set': {'data.status': 'processing'}};
         await db.collection('results').updateOne({'_id': new ObjectId(job.data._id)}, setProcessing);  // eslint-disable-line
 
         const req = await axios.get(job.data.targetUrl);
 
-        const setComplete = {'$set': {'status': 'complete', 'results': req.data}}; // eslint-disable-line
+        const setComplete = {'$set': {'data.status': 'complete', 'data.results': req.data}}; // eslint-disable-line
         return await db.collection('results').updateOne({'_id': new ObjectId(job.data._id)}, setComplete);  // eslint-disable-line
     } catch (err) {
         // add error handling and retry as needed
