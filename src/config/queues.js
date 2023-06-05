@@ -7,7 +7,7 @@ const connection = {
     },
 };
 
-const jobQueue = new Queue('foo', connection);
+const jobQueue = new Queue('jobQueue', connection);
 
 module.exports = {
     jobQueue,
