@@ -3,7 +3,6 @@ const {jobQueue} = require('../config/queues');
 const {getJob, deleteJob, addJobs} = require('../services/jobService');
 const {ObjectId} = require('mongodb');
 
-// To Do - with more time move the logic out of the routes file
 // Consolidate error handling
 
 router.route('/job/:id')
